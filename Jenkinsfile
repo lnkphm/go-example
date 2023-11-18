@@ -13,7 +13,7 @@ pipeline {
         )
     }
     environment {
-        GOPATH = pwd()
+        GOPATH = '${WORKSPACE}/go'
         GOCACHE = '/tmp'
         IMAGE_REGISTRY = 'registry-1.docker.io'
         IMAGE_REPO = 'lnkphm/go-example'
@@ -22,7 +22,8 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'env'
+                sh 'printenv'
+                sh 'mkdir -p ${GOPATH}'
                 sh 'go mod download'
                 sh 'go build'
             }
