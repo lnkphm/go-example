@@ -6,6 +6,7 @@ pipeline {
         }
     }
     options {
+        skipDefaultCheckout(true)
         buildDiscarder(
             logRotator(
                 numToKeepStr: '5',
@@ -21,6 +22,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
+                cleanWs()
                 sh 'go mod download'
                 sh 'go build'
             }
@@ -56,7 +58,12 @@ pipeline {
             echo 'Pipeline failed'
         }
         always {
-            cleanWs()
+            cleanWs(cleanWhenNotBuilt: false,
+                    deleteDirs: true,
+                    disableDeferredWipeout: true,
+                    notFailBuild: true,
+                    patterns: [[pattern: '.gitignore', type: 'INCLUDE'],
+                               [pattern: '.propsfile', type: 'EXCLUDE']])
         }
     }
 }
