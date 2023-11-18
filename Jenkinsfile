@@ -41,9 +41,7 @@ pipeline {
             }
         }
         stage('Publish') {
-            agent {
-                any
-            }
+            agent any
             when {
                 branch 'main'
             }
