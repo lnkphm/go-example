@@ -4,7 +4,16 @@ pipeline {
             image 'golang:1.21-alpine'
         }
     }
+    options {
+        buildDiscarder(
+            logRotator(
+                numToKeepStr: '5',
+                artifactNumToKeepStr: '5'
+            )
+        )
+    }
     environment {
+        GOPATH = pwd()
         GOCACHE = '/tmp'
         IMAGE_REGISTRY = 'registry-1.docker.io'
         IMAGE_REPO = 'lnkphm/go-example'
@@ -38,6 +47,11 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo "Trigger deployment here"
+            }
+        }
+        stage('Cleanup') {
+            steps {
+                deleteDir()
             }
         }
     }
