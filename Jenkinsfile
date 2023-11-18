@@ -4,15 +4,19 @@ pipeline {
     }
     stages {
         stage('Build') {
+            // Set GOPATH to current workspace
+            script {
+                def gopath = pwd()
+                env.GOPATH = "${gopath}/go"
+                sh "mkdir -p ${gopath}/go"
+            }
             steps {
-                sh 'go clean -cache'
                 sh 'go mod download'
                 sh 'go build'
             }
         }
         stage('Test') {
             steps {
-                sh 'go clean -cache'
                 sh 'go test ./... -v -short'
             }
         }
