@@ -41,7 +41,11 @@ pipeline {
             }
         }
         stage('Publish') {
-            agent none
+            agent {
+                node {
+                    label 'publish'
+                }
+            }
             when {
                 branch 'main'
             }
