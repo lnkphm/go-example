@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'golang:1.21-alpine'
-            args '-u root'
-        }
-    }
+    agent none
     options {
         buildDiscarder(
             logRotator(
@@ -22,18 +17,39 @@ pipeline {
     }
     stages {
         stage('Build') {
+            agent {
+                docker {
+                    image 'golang:1.21-alpine'
+                    args '-u root'
+                    reuseNode true
+                }
+            }
             steps {
                 sh 'go mod download'
                 sh 'go build -o build/go-example'
             }
         }
         stage('Test') {
+            agent {
+                docker {
+                    image 'golang:1.21-alpine'
+                    args '-u root'
+                    reuseNode true
+                }
+            }
             steps {
                 sh 'go clean -testcache'
                 sh 'go test ./... -v -short'
             }
         }
         stage('Lint') {
+            agent {
+                docker {
+                    image 'golang:1.21-alpine'
+                    args '-u root'
+                    reuseNode true
+                }
+            }
             steps {
                 sh 'wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.55.2'
                 sh '${GOPATH}/bin/golangci-lint --version'
@@ -41,11 +57,7 @@ pipeline {
             }
         }
         stage('Publish') {
-            agent {
-                node {
-                    label 'publish'
-                }
-            }
+            agent any
             when {
                 branch 'main'
             }
@@ -59,6 +71,7 @@ pipeline {
             }
         }
         stage('Deploy') {
+            agent any
             when {
                 branch 'main'
             }
