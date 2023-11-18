@@ -40,13 +40,19 @@ pipeline {
             }
         }
         stage('Publish') {
+            when {
+                branch 'main'
+            }
             steps {
                 echo "Publish image here"
             }
         }
         stage('Deploy') {
+            when {
+                branch 'main'
+            }
             steps {
-                echo "Trigger deployment hereeeeeeeeeeeeeee"
+                echo "Trigger deployment here"
             }
         }
     }
