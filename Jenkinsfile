@@ -20,9 +20,34 @@ pipeline {
         IMAGE_TAG = 'latest'
     }
     stages {
-        stage('Cleanup') {
+        stage('Build') {
             steps {
-                deleteDir()
+                sh 'printenv'
+                sh 'mkdir -p ${GOPATH}'
+                sh 'go mod download'
+                sh 'go build'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'go clean -testcache'
+                sh 'go test ./... -v -short'
+            }
+        }
+        stage('Lint') {
+            steps {
+                sh 'wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.55.2'
+                sh '${GOPATH}/bin/golangci-lint --version'
+            }
+        }
+        stage('Publish') {
+            steps {
+                echo "Publish image here"
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo "Trigger deployment here"
             }
         }
     }
@@ -35,6 +60,7 @@ pipeline {
         }
         always {
             echo 'Pipeline completed'
+            deleteDir()
         }
     }
 }
