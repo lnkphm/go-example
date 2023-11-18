@@ -88,6 +88,7 @@ pipeline {
             echo 'Pipeline failed'
         }
         always {
+            agent any
             cleanWs(
                 cleanWhenNotBuilt: false,
                 deleteDirs: true,
