@@ -16,6 +16,7 @@ pipeline {
                 docker {
                     image 'golang:1.21-alpine'
                     args '-u root'
+                    reuseNode true
                 }
             }
             stages {
