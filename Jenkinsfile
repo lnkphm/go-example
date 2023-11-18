@@ -14,7 +14,6 @@ pipeline {
         )
     }
     environment {
-        IMAGE_REGISTRY = "registry-1.docker.io"
         IMAGE_REPO = "lnkphm/go-example"
         IMAGE_TAG = "latest"
     }
@@ -35,6 +34,7 @@ pipeline {
             steps {
                 sh 'wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.55.2'
                 sh '${GOPATH}/bin/golangci-lint --version'
+                sh 'golangci-lint run'
             }
         }
         stage('Publish') {
