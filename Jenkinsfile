@@ -6,18 +6,21 @@ pipeline {
         }
     }
     environment {
-        GOPATH = "${env.WORKSPACE}/go"
+        IMAGE_REGISTRY = 'registry-1.docker.io'
+        IMAGE_REPO = 'lnkphm/go-example'
+        IMAGE_TAG = 'latest'
     }
     stages {
         stage('Build') {
             steps {
-                sh 'mkdir -p ${GOPATH}'
+                echo "${GOPATH}"
                 sh 'go mod download'
                 sh 'go build'
             }
         }
         stage('Test') {
             steps {
+                sh 'go clean -testcache'
                 sh 'go test ./... -v -short'
             }
         }
@@ -30,6 +33,17 @@ pipeline {
             steps {
                 echo "Trigger deployment here"
             }
+        }
+    }
+    post {
+        success {
+            echo 'Pipeline successful'
+        }
+        failure {
+            echo 'Pipeline failed'
+        }
+        always {
+            echo 'Pipeline completed'
         }
     }
 }
