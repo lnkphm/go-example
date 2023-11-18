@@ -16,6 +16,7 @@ pipeline {
         )
     }
     environment {
+        IMAGE_REGISTRY = "https://index.docker.io/v1/"
         IMAGE_REPO = "lnkphm/go-example"
         IMAGE_TAG = "latest"
     }
@@ -44,7 +45,12 @@ pipeline {
                 branch 'main'
             }
             steps {
-                echo "Publish image here"
+                script {
+                    image = docker.build("${IMAGE_REPO}:${IMAGE_TAG}", ".")
+                    docker.withRegistry("${IMAGE_REGISTRY}", "dockerhub") {
+                        image.push()
+                    }
+                }
             }
         }
         stage('Deploy') {
