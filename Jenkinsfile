@@ -10,11 +10,6 @@ pipeline {
             )
         )
     }
-    environment {
-        IMAGE_REGISTRY = "https://index.docker.io/v1/"
-        IMAGE_REPO = "lnkphm/go-example"
-        IMAGE_TAG = "latest"
-    }
     stages {
         stage('Build') {
             agent {
@@ -60,6 +55,11 @@ pipeline {
             agent any
             when {
                 branch 'main'
+            }
+            environment {
+                IMAGE_REGISTRY = "https://index.docker.io/v1/"
+                IMAGE_REPO = "lnkphm/go-example"
+                IMAGE_TAG = "latest"
             }
             steps {
                 script {
