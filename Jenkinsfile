@@ -88,17 +88,7 @@ pipeline {
             echo 'Pipeline failed'
         }
         always {
-            agent any
-            cleanWs(
-                cleanWhenNotBuilt: false,
-                deleteDirs: true,
-                disableDeferredWipeout: true,
-                notFailBuild: true,
-                patterns: [
-                    [pattern: '.gitignore', type: 'INCLUDE'],
-                    [pattern: '.propsfile', type: 'EXCLUDE']
-                ]
-            )
+            echo 'Pipeline completed'
         }
     }
 }
