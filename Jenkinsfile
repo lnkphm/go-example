@@ -2,6 +2,7 @@ pipeline {
     agent {
         docker {
             image 'golang:1.21-alpine'
+            args '-u root'
         }
     }
     options {
@@ -13,17 +14,13 @@ pipeline {
         )
     }
     environment {
-        GOPATH = "${env.WORKSPACE}/go"
-        GOCACHE = "/tmp"
-        IMAGE_REGISTRY = 'registry-1.docker.io'
-        IMAGE_REPO = 'lnkphm/go-example'
-        IMAGE_TAG = 'latest'
+        IMAGE_REGISTRY = "registry-1.docker.io"
+        IMAGE_REPO = "lnkphm/go-example"
+        IMAGE_TAG = "latest"
     }
     stages {
         stage('Build') {
             steps {
-                sh 'printenv'
-                sh 'mkdir -p ${GOPATH}'
                 sh 'go mod download'
                 sh 'go build'
             }
@@ -36,8 +33,8 @@ pipeline {
         }
         stage('Lint') {
             steps {
-                sh 'wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.55.2'
-                sh '${GOPATH}/bin/golangci-lint --version'
+                sh 'wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.55.2'
+                sh 'golangci-lint --version'
             }
         }
         stage('Publish') {
