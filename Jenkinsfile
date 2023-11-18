@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh mkdir -p ${GOPATH}
+                sh 'mkdir -p ${GOPATH}'
                 sh 'go mod download'
                 sh 'go build'
             }
