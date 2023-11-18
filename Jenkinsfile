@@ -41,7 +41,6 @@ pipeline {
             }
         }
         stage('Build Image & Publish') {
-            agent any
             when {
                 branch 'main'
             }
@@ -60,7 +59,6 @@ pipeline {
             }
         }
         stage('Deploy') {
-            agent any
             when {
                 branch 'main'
             }
