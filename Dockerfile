@@ -11,4 +11,4 @@ FROM scratch AS runner
 WORKDIR /app
 COPY --from=builder /app/go-example ./go-example
 EXPOSE 8080
-CMD [ "/app/hello-server" ]
+CMD [ "/app/go-example" ]
