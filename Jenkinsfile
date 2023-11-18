@@ -21,7 +21,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'go get -d ./...'
+                sh 'go mod download'
                 sh 'go build'
             }
         }
