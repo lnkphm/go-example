@@ -23,7 +23,7 @@ pipeline {
         stage('Build') {
             steps {
                 cleanWs()
-                sh 'go mod download'
+                sh 'go get -d ./...'
                 sh 'go build'
             }
         }
