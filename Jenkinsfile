@@ -1,5 +1,5 @@
 pipeline {
-    agent none
+    agent any
     options {
         buildDiscarder(
             logRotator(
@@ -11,47 +11,36 @@ pipeline {
         )
     }
     stages {
-        stage('Build') {
+        stage('Build & Test') {
             agent {
                 docker {
                     image 'golang:1.21-alpine'
                     args '-u root'
-                    reuseNode true
                 }
             }
-            steps {
-                sh 'go mod download'
-                sh 'go build -o build/go-example'
-            }
-        }
-        stage('Test') {
-            agent {
-                docker {
-                    image 'golang:1.21-alpine'
-                    args '-u root'
-                    reuseNode true
+            stages {
+                stage('Build') {
+                    steps {
+                        sh 'go mod download'
+                        sh 'go build -o build/go-example'
+                    }
+                }
+                stage('Test') {
+                    steps {
+                        sh 'go clean -testcache'
+                        sh 'go test ./... -v -short'
+                    }
+                }
+                stage('Lint') {
+                    steps {
+                        sh 'wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.55.2'
+                        sh '${GOPATH}/bin/golangci-lint --version'
+                        sh 'golangci-lint run'
+                    }
                 }
             }
-            steps {
-                sh 'go clean -testcache'
-                sh 'go test ./... -v -short'
-            }
         }
-        stage('Lint') {
-            agent {
-                docker {
-                    image 'golang:1.21-alpine'
-                    args '-u root'
-                    reuseNode true
-                }
-            }
-            steps {
-                sh 'wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.55.2'
-                sh '${GOPATH}/bin/golangci-lint --version'
-                sh 'golangci-lint run'
-            }
-        }
-        stage('Publish') {
+        stage('Build Image & Publish') {
             agent any
             when {
                 branch 'main'
@@ -88,6 +77,17 @@ pipeline {
             echo 'Pipeline failed'
         }
         always {
+            echo 'Clean workspace..'
+            cleanWs(
+                cleanWhenNotBuilt: false,
+                deleteDirs: true,
+                disableDeferredWipeout: true,
+                notFailBuild: true,
+                patterns: [
+                    [pattern: '.gitignore', type: 'INCLUDE'],
+                    [pattern: '.propsfile', type: 'EXCLUDE']
+                ]
+            )
             echo 'Pipeline completed'
         }
     }
