@@ -5,7 +5,7 @@ pipeline {
         }
     }
     environment {
-        GOCACHE = "/tmp"
+        GOCACHE = '/tmp'
         IMAGE_REGISTRY = 'registry-1.docker.io'
         IMAGE_REPO = 'lnkphm/go-example'
         IMAGE_TAG = 'latest'
@@ -13,6 +13,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
+                sh 'env'
                 sh 'go mod download'
                 sh 'go build'
             }
