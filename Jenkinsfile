@@ -13,7 +13,7 @@ pipeline {
         )
     }
     environment {
-        GOPATH = '${env.WORKSPACE}/go'
+        GOPATH = "${env.WORKSPACE}/go"
         GOCACHE = '/tmp'
         IMAGE_REGISTRY = 'registry-1.docker.io'
         IMAGE_REPO = 'lnkphm/go-example'
