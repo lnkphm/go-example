@@ -1,16 +1,16 @@
 pipeline {
     agent {
-        docker { image 'golang:1.21-alpine'}
+        docker {
+            image 'golang:1.21-alpine'
+        }
+    }
+    environment {
+        GOPATH = "${env.WORKSPACE}/go"
     }
     stages {
         stage('Build') {
-            // Set GOPATH to current workspace
-            script {
-                def gopath = pwd()
-                env.GOPATH = "${gopath}/go"
-                sh "mkdir -p ${gopath}/go"
-            }
             steps {
+                sh mkdir -p ${GOPATH}
                 sh 'go mod download'
                 sh 'go build'
             }
