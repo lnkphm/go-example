@@ -8,8 +8,10 @@ pipeline {
     options {
         buildDiscarder(
             logRotator(
-                numToKeepStr: '5',
-                artifactNumToKeepStr: '5'
+                artifactDaysToKeepStr: "50"
+                artifactNumToKeepStr: "5"
+                daysToKeepStr: "100"
+                numToKeepStr: "10"
             )
         )
     }
@@ -21,7 +23,7 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'go mod download'
-                sh 'go build'
+                sh 'go build -o build/go-example'
             }
         }
         stage('Test') {
@@ -56,12 +58,16 @@ pipeline {
             echo 'Pipeline failed'
         }
         always {
-            cleanWs(cleanWhenNotBuilt: false,
-                    deleteDirs: true,
-                    disableDeferredWipeout: true,
-                    notFailBuild: true,
-                    patterns: [[pattern: '.gitignore', type: 'INCLUDE'],
-                               [pattern: '.propsfile', type: 'EXCLUDE']])
+            cleanWs(
+                cleanWhenNotBuilt: false,
+                deleteDirs: true,
+                disableDeferredWipeout: true,
+                notFailBuild: true,
+                patterns: [
+                    [pattern: '.gitignore', type: 'INCLUDE'],
+                    [pattern: '.propsfile', type: 'EXCLUDE']
+                ]
+            )
         }
     }
 }
