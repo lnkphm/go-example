@@ -26,7 +26,7 @@ pipeline {
         stage('Lint') {
             steps {
                 sh 'wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.55.2'
-                sh 'golangci-lint --version'
+                sh '${GOPATH}/bin/golangci-lint --version'
             }
         }
         stage('Publish') {
