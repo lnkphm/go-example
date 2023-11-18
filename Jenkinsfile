@@ -2,10 +2,11 @@ pipeline {
     agent {
         docker {
             image 'golang:1.21-alpine'
-            args '-u root'
         }
     }
     environment {
+        GOPATH = "${env.WORKSPACE}/go"
+        GOCACHE = "/tmp"
         IMAGE_REGISTRY = 'registry-1.docker.io'
         IMAGE_REPO = 'lnkphm/go-example'
         IMAGE_TAG = 'latest'
@@ -13,7 +14,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo "${GOPATH}"
+                sh 'mkdir -p ${GOPATH}'
                 sh 'go mod download'
                 sh 'go build'
             }
