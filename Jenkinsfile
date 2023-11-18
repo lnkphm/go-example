@@ -42,9 +42,7 @@ pipeline {
         }
         stage('Publish') {
             agent {
-                docker {
-                    image 'docker:dind'
-                }
+                any
             }
             when {
                 branch 'main'
