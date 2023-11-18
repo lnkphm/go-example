@@ -25,6 +25,12 @@ pipeline {
                 sh 'go test ./... -v -short'
             }
         }
+        stage('Linting') {
+            steps {
+                sh 'wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.55.2'
+                sh 'golangci-lint --version'
+            }
+        }
         stage('Publish') {
             steps {
                 echo "Publish image here"
