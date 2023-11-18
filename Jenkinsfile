@@ -5,7 +5,6 @@ pipeline {
         }
     }
     environment {
-        GOPATH = "${env.WORKSPACE}/go"
         GOCACHE = "/tmp"
         IMAGE_REGISTRY = 'registry-1.docker.io'
         IMAGE_REPO = 'lnkphm/go-example'
@@ -14,7 +13,6 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'mkdir -p ${GOPATH}'
                 sh 'go mod download'
                 sh 'go build'
             }
@@ -25,7 +23,7 @@ pipeline {
                 sh 'go test ./... -v -short'
             }
         }
-        stage('Linting') {
+        stage('Lint') {
             steps {
                 sh 'wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.55.2'
                 sh 'golangci-lint --version'
