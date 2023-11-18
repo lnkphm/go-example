@@ -6,7 +6,6 @@ pipeline {
         }
     }
     options {
-        skipDefaultCheckout(true)
         buildDiscarder(
             logRotator(
                 numToKeepStr: '5',
@@ -22,7 +21,6 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                cleanWs()
                 sh 'go get -d ./...'
                 sh 'go build'
             }
